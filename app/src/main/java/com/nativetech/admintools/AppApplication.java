@@ -14,7 +14,7 @@ public class AppApplication extends Application {
         super.onCreate();
 
 
-        AnalyticsApplication.initAnalytics("","",this);
+        AnalyticsApplication.initAnalytics("Admin_Tools","","",this);
 
     }
 

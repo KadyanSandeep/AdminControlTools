@@ -30,7 +30,7 @@ public class AnalyticsApplication extends Application {
 
     public static FirebaseDatabase masterDatabase;
 
-    public static final String appRef = "Admin_Control";
+    public static String appRef = "Not_Specified";
     public static String defaultFCMTopic;
 
     public static ArrayList<String> appRefArrayList = new ArrayList<>();
@@ -48,7 +48,8 @@ public class AnalyticsApplication extends Application {
 
     }
 
-    public static FirebaseDatabase initAnalytics(String applicationId, String databaseUrl, Context context) {
+    public static FirebaseDatabase initAnalytics(String appDefaultRef,String applicationId, String databaseUrl, Context context) {
+        appRef = appDefaultRef;
         //FirebaseDatabase masterDatabase = null;
         try {
             boolean hasBeenInitialized = false;
