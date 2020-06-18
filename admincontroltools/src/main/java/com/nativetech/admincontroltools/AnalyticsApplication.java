@@ -39,7 +39,7 @@ public class AnalyticsApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        FirebaseDatabase masterDatabase = FirebaseDatabase.getInstance();
+        masterDatabase = FirebaseDatabase.getInstance();
         defaultFCMTopic = getApplicationContext().getPackageName();
 
         // uncomment below line it for testing ads, updateBox, ratingBox
@@ -48,7 +48,7 @@ public class AnalyticsApplication extends Application {
 
     }
 
-    public static FirebaseDatabase initAnalytics(String appDefaultRef,String applicationId, String databaseUrl, Context context) {
+    public static void initAnalytics(String appDefaultRef, String applicationId, String databaseUrl, Context context) {
         appRef = appDefaultRef;
         //FirebaseDatabase masterDatabase = null;
         try {
@@ -79,7 +79,7 @@ public class AnalyticsApplication extends Application {
             e.printStackTrace();
         }
 
-        return masterDatabase;
+        //return masterDatabase;
     }
 
     public static void applyAnalytics(Context context) {
@@ -203,6 +203,7 @@ public class AnalyticsApplication extends Application {
         Calendar calendar = Calendar.getInstance();
         DateFormat idDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         String today_date = idDateFormat.format(calendar.getTime());
+
         final DatabaseReference masterDayWiseRef = masterDatabase.getReference("Analytics").child(appRef)
                 .child("Day_Wise").child(today_date).child("Sessions");
         masterDayWiseRef.addListenerForSingleValueEvent(new ValueEventListener() {
