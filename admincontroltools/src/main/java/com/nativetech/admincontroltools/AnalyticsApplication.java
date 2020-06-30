@@ -42,10 +42,6 @@ public class AnalyticsApplication extends Application {
         masterDatabase = FirebaseDatabase.getInstance();
         defaultFCMTopic = getApplicationContext().getPackageName();
 
-        // uncomment below line it for testing ads, updateBox, ratingBox
-        // comment before go to production
-        // firebaseDatabase = connectWithMasterControl();
-
     }
 
     public static void initAnalytics(String appDefaultRef, String applicationId, String databaseUrl, Context context) {
@@ -173,6 +169,65 @@ public class AnalyticsApplication extends Application {
 
             SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean("firstTime", true);
+            editor.commit();
+        }
+
+
+    }
+
+    public static void addDAUAnalytics(Context context) {
+        Calendar calendar = Calendar.getInstance();
+        DateFormat idDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        String today_date = idDateFormat.format(calendar.getTime());
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        if (!prefs.getString("lastOpenDate", "No_Date").equals(today_date)) {
+            // run your one time code
+            try {
+
+                final DatabaseReference masterDayWiseRef = masterDatabase.getReference("Analytics").child(appRef)
+                        .child("Day_Wise").child(today_date).child("DAU");
+                masterDayWiseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            try {
+                                masterDayWiseRef.runTransaction(new Transaction.Handler() {
+                                    @NonNull
+                                    @Override
+                                    public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                                        if (mutableData.getValue() != null) {
+                                            int value = mutableData.getValue(Integer.class);
+                                            value++;
+                                            mutableData.setValue(value);
+                                        }
+                                        return Transaction.success(mutableData);
+                                    }
+
+                                    @Override
+                                    public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                                    }
+                                });
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }else {
+                            masterDayWiseRef.setValue(1);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) { }
+                });
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("lastOpenDate", today_date);
             editor.commit();
         }
 
