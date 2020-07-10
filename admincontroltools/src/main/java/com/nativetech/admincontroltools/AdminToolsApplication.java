@@ -32,7 +32,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class AnalyticsApplication extends Application {
+public class AdminToolsApplication extends Application {
 
     public static SharedPreferences MainSharedPreferences;
     public static String ALERT_BOX_STATUS,ALERT_BOX_TITLE,ALERT_BOX_MESSAGE,ALERT_BOX_URL;
@@ -41,7 +41,7 @@ public class AnalyticsApplication extends Application {
     public static String RATE_BOX_STATUS,RATE_BOX_TITLE,RATE_BOX_MESSAGE,RATE_BOX_URL;
     public static String RATE_BOX_POSITIVE_BUTTON,RATE_BOX_NEGATIVE_BUTTON,RATE_BOX_NEUTRAL_BUTTON;
 
-    public static FirebaseDatabase masterDatabase;
+    public static FirebaseDatabase adminToolsDatabase;
     public static String appRef = "Not_Specified";
     public static String defaultFCMTopic;
     public static ArrayList<String> appRefArrayList = new ArrayList<>();
@@ -51,7 +51,7 @@ public class AnalyticsApplication extends Application {
         super.onCreate();
 
         MainSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        masterDatabase = FirebaseDatabase.getInstance();
+        adminToolsDatabase = FirebaseDatabase.getInstance();
         defaultFCMTopic = getApplicationContext().getPackageName();
 
     }
@@ -82,7 +82,7 @@ public class AnalyticsApplication extends Application {
                 firebaseApp = FirebaseApp.initializeApp(context, options, "adminControlTools");
             else
                 firebaseApp = FirebaseApp.getInstance("adminControlTools");
-            masterDatabase = FirebaseDatabase.getInstance(firebaseApp);
+            adminToolsDatabase = FirebaseDatabase.getInstance(firebaseApp);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -92,8 +92,11 @@ public class AnalyticsApplication extends Application {
 
     public static void applyAdminTools(Context context){
 
+        if (BuildConfig.DEBUG){
+            setAppId(context);
+        }
         applyAnalytics(context);
-        checkUpdates(masterDatabase,"",context);
+        checkUpdates(FirebaseDatabase.getInstance(),"",context);
 
         MainSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         int launchTime = MainSharedPreferences.getInt("launchTime", 0);
@@ -123,7 +126,7 @@ public class AnalyticsApplication extends Application {
                 DateFormat idDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
                 String today_date = idDateFormat.format(calendar.getTime());
 
-                final DatabaseReference masterTotalRef = masterDatabase.getReference("Analytics").child(appRef)
+                final DatabaseReference masterTotalRef = adminToolsDatabase.getReference("Analytics").child(appRef)
                         .child("Total_Downloads");
                 masterTotalRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -160,7 +163,7 @@ public class AnalyticsApplication extends Application {
                     public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
 
-                final DatabaseReference masterDayWiseRef = masterDatabase.getReference("Analytics").child(appRef)
+                final DatabaseReference masterDayWiseRef = adminToolsDatabase.getReference("Analytics").child(appRef)
                         .child("Day_Wise").child(today_date).child("First_Open");
                 masterDayWiseRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -196,10 +199,6 @@ public class AnalyticsApplication extends Application {
                     public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
 
-                if (BuildConfig.DEBUG){
-                    setAppId(context);
-                }
-
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -224,7 +223,7 @@ public class AnalyticsApplication extends Application {
             // run your one time code
             try {
 
-                final DatabaseReference masterDayWiseRef = masterDatabase.getReference("Analytics").child(appRef)
+                final DatabaseReference masterDayWiseRef = adminToolsDatabase.getReference("Analytics").child(appRef)
                         .child("Day_Wise").child(today_date).child("DAU");
                 masterDayWiseRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -301,7 +300,7 @@ public class AnalyticsApplication extends Application {
         DateFormat idDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         String today_date = idDateFormat.format(calendar.getTime());
 
-        final DatabaseReference masterDayWiseRef = masterDatabase.getReference("Analytics").child(appRef)
+        final DatabaseReference masterDayWiseRef = adminToolsDatabase.getReference("Analytics").child(appRef)
                 .child("Day_Wise").child(today_date).child("Sessions");
         masterDayWiseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -431,7 +430,7 @@ public class AnalyticsApplication extends Application {
 
     public static void showRatingBox(Context context) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference AlertBox_ref = masterDatabase.getReference(appRef).child("DashBoard").child("Rate_Box");
+        final DatabaseReference AlertBox_ref = database.getReference(appRef).child("DashBoard").child("Rate_Box");
         AlertBox_ref.keepSynced(true);
         AlertBox_ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -509,7 +508,7 @@ public class AnalyticsApplication extends Application {
 
     public static void showAlertBox(Context context) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference AlertBox_ref = masterDatabase.getReference(appRef).child("DashBoard").child("Alert_Box");
+        final DatabaseReference AlertBox_ref = database.getReference(appRef).child("DashBoard").child("Alert_Box");
         AlertBox_ref.keepSynced(true);
         AlertBox_ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -589,7 +588,7 @@ public class AnalyticsApplication extends Application {
     public static void setAppId(Context context){
         //set appId;
         String packageName = context.getPackageName();
-        final DatabaseReference masterAppRef = masterDatabase.getReference("Analytics").child(appRef)
+        final DatabaseReference masterAppRef = adminToolsDatabase.getReference("Analytics").child(appRef)
                 .child("appId");
         masterAppRef.setValue(packageName);
     }

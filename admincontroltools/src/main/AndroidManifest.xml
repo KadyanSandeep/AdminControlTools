@@ -3,7 +3,7 @@
     package="com.nativetech.admincontroltools">
 
     <!--<application
-        android:name=".AnalyticsApplication"
+        android:name=".AdminToolsApplication"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:supportsRtl="true">
