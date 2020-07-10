@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AlertDialogWhite" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Used for the buttons -->
+        <item name="colorAccent">#00bfa5</item>
+        <!-- Used for the title and text -->
+        <item name="android:textColorPrimary">#000000</item>
+        <!-- Used for the background -->
+        <item name="android:background">#FFFFFF</item>
+    </style>
+
+</resources>

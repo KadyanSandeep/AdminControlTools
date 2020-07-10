@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.view.ContextThemeWrapper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -55,7 +56,7 @@ public class AnalyticsApplication extends Application {
 
     }
 
-    public static void initAnalytics(String appDefaultRef, String applicationId, String databaseUrl, Context context) {
+    public static void initAdminTools(String appDefaultRef, String applicationId, String databaseUrl, Context context) {
         appRef = appDefaultRef;
         //FirebaseDatabase masterDatabase = null;
         try {
@@ -89,10 +90,9 @@ public class AnalyticsApplication extends Application {
         //return masterDatabase;
     }
 
-    public static void initAdminTools( Context context){
+    public static void applyAdminTools(Context context){
 
         applyAnalytics(context);
-
         checkUpdates(masterDatabase,"",context);
 
         MainSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -195,6 +195,10 @@ public class AnalyticsApplication extends Application {
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
+
+                if (BuildConfig.DEBUG){
+                    setAppId(context);
+                }
 
 
             } catch (Exception e) {
@@ -367,7 +371,7 @@ public class AnalyticsApplication extends Application {
             }
 
             private void updateDialog() {
-                AlertDialog dialog = new AlertDialog.Builder(context)
+                AlertDialog dialog =  new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogWhite))
                         .setTitle("New version available")
                         .setCancelable(false)
                         .setMessage("Please, Update your app to new version for new features ")
@@ -396,7 +400,7 @@ public class AnalyticsApplication extends Application {
             }
 
             private void ForceUpdateDialog() {
-                AlertDialog dialog = new AlertDialog.Builder(context)
+                AlertDialog dialog =  new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogWhite))
                         .setTitle("Update Needed")
                         .setCancelable(false)
                         .setMessage("Please, Update your app to new version. This version of " + context.getApplicationInfo().loadLabel(context.getPackageManager()) + " become obsolete.")
@@ -460,7 +464,7 @@ public class AnalyticsApplication extends Application {
             }
 
             private void AlertBox() {
-                AlertDialog dialog = new AlertDialog.Builder(context)
+                AlertDialog dialog =  new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogWhite))
                         .setTitle(RATE_BOX_TITLE)
                         .setCancelable(false)
                         .setMessage(RATE_BOX_MESSAGE)
@@ -538,7 +542,7 @@ public class AnalyticsApplication extends Application {
             }
 
             private void AlertBox() {
-                AlertDialog dialog = new AlertDialog.Builder(context)
+                AlertDialog dialog =  new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogWhite))
                         .setTitle(ALERT_BOX_TITLE)
                         .setCancelable(false)
                         .setMessage(ALERT_BOX_MESSAGE)
@@ -580,6 +584,14 @@ public class AnalyticsApplication extends Application {
                 //Toast.makeText(getApplicationContext(),"The read failed: " + databaseError.getCode(),Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    public static void setAppId(Context context){
+        //set appId;
+        String packageName = context.getPackageName();
+        final DatabaseReference masterAppRef = masterDatabase.getReference("Analytics").child(appRef)
+                .child("appId");
+        masterAppRef.setValue(packageName);
     }
 
 

@@ -13,9 +13,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //AnalyticsApplication.applyAnalytics(this);
-        //AnalyticsApplication.addDAUAnalytics(this);
-        //AnalyticsApplication.addSessionAnalytics(this);
+        //AnalyticsApplication.setAdminTools(this);
+        //AnalyticsApplication.setAppId(this);
 
     }
 }
