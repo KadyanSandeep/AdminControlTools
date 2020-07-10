@@ -64,7 +64,7 @@ public class AnalyticsApplication extends Application {
             FirebaseApp firebaseApp;
             List<FirebaseApp> appList = FirebaseApp.getApps(context);
             for (FirebaseApp app : appList) {
-                if (app.getName().equals("master")) {
+                if (app.getName().equals("adminControlTools")) {
                     hasBeenInitialized = true;
                 }
             }
@@ -79,9 +79,9 @@ public class AnalyticsApplication extends Application {
                     .build();
 
             if (!hasBeenInitialized)
-                firebaseApp = FirebaseApp.initializeApp(context, options, "master");
+                firebaseApp = FirebaseApp.initializeApp(context, options, "adminControlTools");
             else
-                firebaseApp = FirebaseApp.getInstance("master");
+                firebaseApp = FirebaseApp.getInstance("adminControlTools");
             masterDatabase = FirebaseDatabase.getInstance(firebaseApp);
         } catch (Exception e) {
             e.printStackTrace();
