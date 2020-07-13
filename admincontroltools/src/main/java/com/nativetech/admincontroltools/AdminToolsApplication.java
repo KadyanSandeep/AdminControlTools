@@ -90,13 +90,13 @@ public class AdminToolsApplication extends Application {
         //return masterDatabase;
     }
 
-    public static void applyAdminTools(Context context){
+    public static void applyAdminTools(boolean isDebugMode,String VERSION_NAME,Context context){
 
-        if (BuildConfig.DEBUG){
+        if (isDebugMode){
             setAppId(context);
         }
         applyAnalytics(context);
-        checkUpdates(FirebaseDatabase.getInstance(),"",context);
+        checkUpdates(VERSION_NAME, context);
 
         MainSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         int launchTime = MainSharedPreferences.getInt("launchTime", 0);
@@ -337,11 +337,11 @@ public class AdminToolsApplication extends Application {
         });
     }
 
-    private static void checkUpdates(FirebaseDatabase database, String rootRef, Context context) {
+    private static void checkUpdates(String VERSION_NAME,Context context) {
         //Implement force updater via firebase realtime database
         final String[] ForceRequired = new String[1];
         final String[] ForceUpdateStatus = new String[1];
-        DatabaseReference forceUpdater_ref = database.getReference(rootRef).child(appRef).child("ForceUpdater");
+        DatabaseReference forceUpdater_ref = FirebaseDatabase.getInstance().getReference("").child(appRef).child("ForceUpdater");
         forceUpdater_ref.keepSynced(true);
         forceUpdater_ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -350,14 +350,13 @@ public class AdminToolsApplication extends Application {
                     ForceRequired[0] = dataSnapshot.child("ForceRequired").getValue(String.class);
                     ForceUpdateStatus[0] = dataSnapshot.child("ForceUpdateStatus").getValue(String.class);
                     String NewVersion = dataSnapshot.child("ForceUpdate").getValue(String.class);
-                    String CurrentVersion = BuildConfig.VERSION_NAME;
                     try {
                         if (NewVersion != null) {
 
-                            if (!TextUtils.equals(CurrentVersion, NewVersion) && !TextUtils.equals(ForceRequired[0], "true") && TextUtils.equals(ForceUpdateStatus[0], "on")) {
+                            if (!TextUtils.equals(VERSION_NAME, NewVersion) && !TextUtils.equals(ForceRequired[0], "true") && TextUtils.equals(ForceUpdateStatus[0], "on")) {
                                 updateDialog();
                             }
-                            if (!TextUtils.equals(CurrentVersion, NewVersion) && TextUtils.equals(ForceRequired[0], "true") && TextUtils.equals(ForceUpdateStatus[0], "on")) {
+                            if (!TextUtils.equals(VERSION_NAME, NewVersion) && TextUtils.equals(ForceRequired[0], "true") && TextUtils.equals(ForceUpdateStatus[0], "on")) {
                                 ForceUpdateDialog();
                             }
 

@@ -2,6 +2,8 @@ package com.nativetech.admintools;
 
 import android.app.Application;
 
+import com.nativetech.admincontroltools.AdminToolsApplication;
+
 public class AppApplication extends Application {
 
     public static final String appRef = "Admin_Control";
@@ -12,7 +14,7 @@ public class AppApplication extends Application {
         super.onCreate();
 
 
-        //AdminToolsApplication.initAnalytics("Admin_Tools","","",this);
+        //AdminToolsApplication.initAdminTools("Admin_Tools","app_id","db_url",this);
 
     }
 

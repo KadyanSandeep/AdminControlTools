@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import com.nativetech.admincontroltools.AdminToolsApplication;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -11,8 +13,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //AdminToolsApplication.setAdminTools(this);
-        //AdminToolsApplication.setAppId(this);
+        //AdminToolsApplication.applyAdminTools(BuildConfig.DEBUG,BuildConfig.VERSION_NAME,this);
 
     }
 }
